@@ -5,7 +5,6 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 var types = ['palace', 'flat', 'house', 'bungalo'];
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
 
 var mapPins = document.querySelector('.map__pins');
 
@@ -58,4 +57,49 @@ function advertPin() {
 
 var adverts = advertGen(8);
 
-advertPin();
+
+var formFieldsets = document.querySelectorAll('fieldset');
+var formSelects = document.querySelectorAll('select');
+var addForm = document.querySelector('.ad-form');
+var inputAdress = document.querySelector('#address');
+var pageActive = document.querySelector('.map__pin--main');
+var ARROW_HEIGHT = 22;
+
+// 1. сделать элементы форм неактивными
+
+for (var i = 0; i < formFieldsets.length; i++) {
+  formFieldsets[i].disabled = true;
+}
+
+for (i = 0; i < formSelects.length; i++) {
+  formSelects[i].disabled = true;
+}
+
+// 3. Заполнение адреса
+
+inputAdress.value = (parseInt(pageActive.style.left, 10) + parseInt(pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(pageActive.style.top, 10) + parseInt(pageActive.offsetHeight / 2, 10));
+
+// 2. Активация страницы
+var pageActivate = function () {
+  map.classList.remove('map--faded');
+  addForm.classList.remove('ad-form--disabled');
+
+  for (i = 0; i < formFieldsets.length; i++) {
+    formFieldsets[i].disabled = false;
+  }
+
+  for (i = 0; i < formSelects.length; i++) {
+    formSelects[i].disabled = false;
+  }
+
+  advertPin();
+};
+
+var changeAdress = function () {
+  inputAdress.value = (parseInt(pageActive.style.left, 10) + parseInt(pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(pageActive.style.top, 10) + parseInt(pageActive.offsetHeight, 10) + ARROW_HEIGHT);
+};
+
+pageActive.addEventListener('click', pageActivate);
+
+pageActive.addEventListener('mouseup', changeAdress);
+
