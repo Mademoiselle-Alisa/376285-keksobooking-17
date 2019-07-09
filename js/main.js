@@ -103,3 +103,43 @@ pageActive.addEventListener('click', pageActivate);
 
 pageActive.addEventListener('mouseup', changeAdress);
 
+// валидация формы
+
+var flatType = document.querySelector('#type');
+var flatCost = document.querySelector('#price');
+var flatTimeIn = document.querySelector('#timein');
+var flatTimeOut = document.querySelector('#timeout');
+
+var changeFlatCost = function (evt) {
+  if (evt.currentTarget.value === 'bungalo') {
+    flatCost.min = 0;
+    flatCost.placeholder = 0;
+  }
+
+  if (evt.currentTarget.value === 'flat') {
+    flatCost.min = 1000;
+    flatCost.placeholder = 1000;
+  }
+
+  if (evt.currentTarget.value === 'house') {
+    flatCost.min = 5000;
+    flatCost.placeholder = 5000;
+  }
+
+  if (evt.currentTarget.value === 'palace') {
+    flatCost.min = 10000;
+    flatCost.placeholder = 10000;
+  }
+};
+
+var changeTime = function (evt) {
+  if (evt.currentTarget === flatTimeIn) {
+    flatTimeOut.selectedIndex = flatTimeIn.selectedIndex;
+  } else {
+    flatTimeIn.selectedIndex = flatTimeOut.selectedIndex;
+  }
+};
+
+flatType.addEventListener('change', changeFlatCost);
+flatTimeIn.addEventListener('change', changeTime);
+flatTimeOut.addEventListener('change', changeTime);
