@@ -80,9 +80,14 @@ for (i = 0; i < formSelects.length; i++) {
 inputAdress.value = (parseInt(pageActive.style.left, 10) + parseInt(pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(pageActive.style.top, 10) + parseInt(pageActive.offsetHeight / 2, 10));
 
 // 2. Активация страницы
+
+var pageActivated = false;
+
 var pageActivate = function () {
   map.classList.remove('map--faded');
   addForm.classList.remove('ad-form--disabled');
+
+  pageActivated = true;
 
   for (i = 0; i < formFieldsets.length; i++) {
     formFieldsets[i].disabled = false;
@@ -98,10 +103,6 @@ var pageActivate = function () {
 var changeAdress = function () {
   inputAdress.value = (parseInt(pageActive.style.left, 10) + parseInt(pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(pageActive.style.top, 10) + parseInt(pageActive.offsetHeight, 10) + ARROW_HEIGHT);
 };
-
-pageActive.addEventListener('click', pageActivate);
-
-pageActive.addEventListener('mouseup', changeAdress);
 
 // валидация формы
 
@@ -143,3 +144,55 @@ var changeTime = function (evt) {
 flatType.addEventListener('change', changeFlatCost);
 flatTimeIn.addEventListener('change', changeTime);
 flatTimeOut.addEventListener('change', changeTime);
+
+// активация страницы и перетаскивание метки
+
+pageActive.addEventListener('mousedown', function (mouseDownEvt) {
+  mouseDownEvt.preventDefault();
+
+  if (!pageActivated) {
+    pageActivate();
+  }
+
+  var startPinCoords = {
+    x: mouseDownEvt.clientX,
+    y: mouseDownEvt.clientY
+  };
+
+  var pinMove = function (mouseMoveEvt) {
+    mouseMoveEvt.preventDefault();
+
+    var shiftPinCoords = {
+      x: startPinCoords.x - mouseMoveEvt.clientX,
+      y: startPinCoords.y - mouseMoveEvt.clientY
+    };
+
+    startPinCoords = {
+      x: mouseMoveEvt.clientX,
+      y: mouseMoveEvt.clientY
+    };
+
+    var newTop = pageActive.offsetTop - shiftPinCoords.y;
+    var newLeft = pageActive.offsetLeft - shiftPinCoords.x;
+
+    if (newTop > 130 && newTop < 630 && newLeft > 0 && newLeft < 1138) {
+      pageActive.style.top = newTop + 'px';
+      pageActive.style.left = newLeft + 'px';
+
+      changeAdress();
+    }
+  };
+
+  var pinDown = function (mouseUpEvt) {
+    mouseUpEvt.preventDefault();
+    changeAdress();
+
+    document.removeEventListener('mousemove', pinMove);
+    document.removeEventListener('mouseup', pinDown);
+  };
+
+  document.addEventListener('mousemove', pinMove);
+  document.addEventListener('mouseup', pinDown);
+
+});
+
