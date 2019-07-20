@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var adverts = [];
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   function renderPin(advertElem) {
@@ -15,14 +14,12 @@
   }
 
   window.pin = {
-    advertPin: function (advertPinCount) {
+    advertPin: function (adverts) {
       var fragment = document.createDocumentFragment();
-      adverts = window.data.advertGen(advertPinCount); // генерация меток - после заменим на другие входные данные
       for (var i = 0; i < adverts.length; i++) {
         var renderedPin = renderPin(adverts[i]);
         fragment.appendChild(renderedPin);
       }
-
       mapPins.appendChild(fragment);
     }
   };

@@ -7,7 +7,58 @@
   var map = document.querySelector('.map');
   var addForm = document.querySelector('.ad-form');
   var pageActivated = false;
+  var ESC_KEYCODE = 27;
+
+  var onErrorEscDown = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      onErrorClickButton();
+    }
+  };
+
+  var onErrorClickButton = function () {
+    var errorElem = document.querySelector('.error');
+    var reloadButton = document.querySelector('.error__button');
+    reloadButton.removeEventListener('click', onErrorClickButton);
+    errorElem.removeEventListener('click', onErrorClickButton);
+    document.removeEventListener('keydown', onErrorEscDown);
+    errorElem.remove();
+    pageDeactivate();
+  };
+
+  var onError = function (message) {
+    var mainTag = document.querySelector('main');
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+    var errorElement = errorTemplate.cloneNode(true);
+    var errorElementMessage = errorElement.querySelector('.error__message');
+    errorElementMessage.textContent += '! ' + message;
+    mainTag.appendChild(errorElement);
+
+    var reloadButton = errorElement.querySelector('.error__button');
+    reloadButton.addEventListener('click', onErrorClickButton);
+    errorElement.addEventListener('click', onErrorClickButton);
+    errorElement.addEventListener('keydown', onErrorEscDown);
+  };
+
+  var pageDeactivate = function () {
+    map.classList.add('map--faded');
+    addForm.classList.add('ad-form--disabled');
+
+    pageActivated = false;
+
+    for (var i = 0; i < window.form.formFieldsets.length; i++) {
+      window.form.formFieldsets[i].disabled = true;
+    }
+
+    for (i = 0; i < window.form.formSelects.length; i++) {
+      window.form.formSelects[i].disabled = true;
+    }
+    window.util.pageActive.style.top = '375px';
+    window.util.pageActive.style.left = '570px';
+  };
+
   var pageActivate = function () {
+    window.backend.load(window.pin.advertPin, onError);
+
     map.classList.remove('map--faded');
     addForm.classList.remove('ad-form--disabled');
 
@@ -20,8 +71,6 @@
     for (i = 0; i < window.form.formSelects.length; i++) {
       window.form.formSelects[i].disabled = false;
     }
-
-    window.pin.advertPin(8);
   };
 
   window.util.pageActive.addEventListener('mousedown', function (mouseDownEvt) {
