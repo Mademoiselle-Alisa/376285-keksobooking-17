@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var advertsArray = [];
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   function renderPin(advertElem) {
@@ -13,10 +14,42 @@
     return pinElement;
   }
 
+  var removePins = function () {
+    var showedPins = document.querySelectorAll('.map__pin');
+    Array.from(showedPins).filter(function (pin) {
+      return !pin.classList.contains('map__pin--main');
+    }).forEach(function (pin) {
+      pin.remove();
+    });
+  };
+
   window.pin = {
+    savePins: function (loadedAdverts) {
+      advertsArray = loadedAdverts;
+      window.pin.advertPin(advertsArray);
+    },
+
+    filterPins: function (filter) {
+      removePins();
+
+      if (filter === 'any') {
+        window.pin.advertPin(advertsArray);
+        return;
+      }
+      var filteredAdverts = advertsArray.filter(function (advert) {
+        return advert.offer.type === filter;
+      });
+
+      window.pin.advertPin(filteredAdverts);
+    },
+
     advertPin: function (adverts) {
+      var advertsCount = 5;
+      if (adverts.length < 5) {
+        advertsCount = adverts.length;
+      }
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < adverts.length; i++) {
+      for (var i = 0; i < advertsCount; i++) {
         var renderedPin = renderPin(adverts[i]);
         fragment.appendChild(renderedPin);
       }

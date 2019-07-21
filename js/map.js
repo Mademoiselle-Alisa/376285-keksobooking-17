@@ -57,7 +57,7 @@
   };
 
   var pageActivate = function () {
-    window.backend.load(window.pin.advertPin, onError);
+    window.backend.load(window.pin.savePins, onError);
 
     map.classList.remove('map--faded');
     addForm.classList.remove('ad-form--disabled');
