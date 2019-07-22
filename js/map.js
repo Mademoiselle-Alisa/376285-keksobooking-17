@@ -24,7 +24,7 @@
     errorElem.remove();
     pageDeactivate();
   };
-
+  /*
   var onError = function (message) {
     var mainTag = document.querySelector('main');
     var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -38,7 +38,7 @@
     errorElement.addEventListener('click', onErrorClickButton);
     errorElement.addEventListener('keydown', onErrorEscDown);
   };
-
+  */
   var pageDeactivate = function () {
     map.classList.add('map--faded');
     addForm.classList.add('ad-form--disabled');
@@ -57,7 +57,10 @@
   };
 
   var pageActivate = function () {
-    window.backend.load(window.pin.savePins, onError);
+    // window.backend.load(window.pin.savePins, onError);
+    window.pin.advertPin(window.data.advertGen(8));
+    // После вернем backend.load!!! Оно ломает фильтры!
+    window.card.createCard();
 
     map.classList.remove('map--faded');
     addForm.classList.remove('ad-form--disabled');
@@ -71,6 +74,7 @@
     for (i = 0; i < window.form.formSelects.length; i++) {
       window.form.formSelects[i].disabled = false;
     }
+
   };
 
   window.util.pageActive.addEventListener('mousedown', function (mouseDownEvt) {
