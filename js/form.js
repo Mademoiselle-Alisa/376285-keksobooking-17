@@ -4,6 +4,8 @@
   var ARROW_HEIGHT = 22;
   var inputAdress = document.querySelector('#address');
 
+  var filterFlatType = document.querySelector('#housing-type');
+
   window.form = {
     formFieldsets: document.querySelectorAll('fieldset'),
     formSelects: document.querySelectorAll('select'),
@@ -63,5 +65,13 @@
   flatType.addEventListener('change', changeFlatCost);
   flatTimeIn.addEventListener('change', changeTime);
   flatTimeOut.addEventListener('change', changeTime);
+
+  var filterMapPins = function () {
+    var optionValue = filterFlatType.value;
+    window.pin.filterPins(optionValue);
+  };
+
+  filterFlatType.addEventListener('change', filterMapPins);
+
 
 })();
