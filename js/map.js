@@ -7,10 +7,9 @@
   var map = document.querySelector('.map');
   var addForm = document.querySelector('.ad-form');
   var pageActivated = false;
-  var ESC_KEYCODE = 27;
 
   var onErrorEscDown = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
       onErrorClickButton();
     }
   };
@@ -24,7 +23,7 @@
     errorElem.remove();
     pageDeactivate();
   };
-  /*
+
   var onError = function (message) {
     var mainTag = document.querySelector('main');
     var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -38,7 +37,7 @@
     errorElement.addEventListener('click', onErrorClickButton);
     errorElement.addEventListener('keydown', onErrorEscDown);
   };
-  */
+
   var pageDeactivate = function () {
     map.classList.add('map--faded');
     addForm.classList.add('ad-form--disabled');
@@ -57,11 +56,7 @@
   };
 
   var pageActivate = function () {
-    // window.backend.load(window.pin.savePins, onError);
-    window.pin.advertPin(window.data.advertGen(8));
-    // После вернем backend.load!!! Оно ломает фильтры!
-    window.card.createCard();
-
+    window.backend.load(window.data.loadData, onError);
     map.classList.remove('map--faded');
     addForm.classList.remove('ad-form--disabled');
 
