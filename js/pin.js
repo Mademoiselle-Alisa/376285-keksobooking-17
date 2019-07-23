@@ -46,6 +46,10 @@
         renderedPin.addEventListener('click', window.card.createCard.bind(null, adverts[i]));
       }
       mapPins.appendChild(fragment);
+    },
+
+    removeAllPins: function () {
+      removePins();
     }
   };
 })();

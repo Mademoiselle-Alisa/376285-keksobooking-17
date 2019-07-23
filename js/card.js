@@ -94,6 +94,10 @@
       var popupClose = renderedCard.querySelector('.popup__close');
       document.addEventListener('keydown', onCardEscDown);
       popupClose.addEventListener('click', onCardClose);
+    },
+
+    removeCard: function () {
+      onCardClose();
     }
   };
 

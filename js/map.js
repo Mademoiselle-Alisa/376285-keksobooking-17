@@ -4,6 +4,12 @@
   // 2. Активация страницы
   // активация страницы и перетаскивание метки
 
+  window.map = {
+    pageDeactivate: function () {
+      pageDeactivate();
+    }
+  };
+
   var map = document.querySelector('.map');
   var addForm = document.querySelector('.ad-form');
   var pageActivated = false;
@@ -54,6 +60,11 @@
     }
     window.util.pageActive.style.top = '375px';
     window.util.pageActive.style.left = '570px';
+
+    window.card.removeCard();
+    window.pin.removeAllPins();
+    window.form.changeAdress();
+
   };
 
   var pageActivate = function () {
