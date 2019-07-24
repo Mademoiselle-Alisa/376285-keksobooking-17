@@ -44,10 +44,7 @@
     },
 
     advertPin: function (adverts) {
-      var advertsCount = 5;
-      if (adverts.length < 5) {
-        advertsCount = adverts.length;
-      }
+      var advertsCount = (adverts.length < 5) ? adverts.length : 5;
       var fragment = document.createDocumentFragment();
       for (var i = 0; i < advertsCount; i++) {
         var renderedPin = renderPin(adverts[i]);
