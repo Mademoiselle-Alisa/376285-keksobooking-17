@@ -3,6 +3,15 @@
 (function () {
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
+  var filtersDict = {
+    'housing-type': 'type',
+    'housing-price': 'price',
+    'housing-rooms': 'rooms',
+    'housing-guests': 'guests',
+    'features': 'features'
+  };
+
   function renderPin(advertElem) {
     var pinElement = pinTemplate.cloneNode(true);
     pinElement.querySelector('img').src = advertElem.author.avatar;
@@ -25,15 +34,40 @@
 
     filterPins: function (filter) {
       removePins();
-
-      if (filter === 'any') {
-        window.pin.advertPin(window.data.loadedAdverts);
-        return;
-      }
-      var filteredAdverts = window.data.loadedAdverts.filter(function (advert) {
-        return advert.offer.type === filter;
+      window.card.removeCard();
+      var filteredAdverts = window.data.loadedAdverts;
+      Array.from(filter.elements).forEach(function (elem) {
+        if (typeof (elem.value) !== 'undefined') {
+          if (elem.tagName.toLowerCase() === 'input' && elem.checked) {
+            filteredAdverts = filteredAdverts.filter(function (advert) {
+              return advert.offer.features.includes(elem.value);
+            });
+          }
+          if (elem.tagName.toLowerCase() === 'select') {
+            if (elem.value !== 'any') {
+              var currentFilter = filtersDict[elem.name];
+              if (elem.name === 'housing-price') {
+                filteredAdverts = filteredAdverts.filter(function (advert) {
+                  if (elem.value === 'middle' && advert.offer[currentFilter] >= 10000 && advert.offer[currentFilter] <= 50000) {
+                    return advert;
+                  }
+                  if (elem.value === 'low' && advert.offer[currentFilter] < 10000) {
+                    return advert;
+                  }
+                  if (elem.value === 'high' && advert.offer[currentFilter] > 50000) {
+                    return advert;
+                  }
+                  return null;
+                });
+              } else {
+                filteredAdverts = filteredAdverts.filter(function (advert) {
+                  return advert.offer[currentFilter].toString() === elem.value.toString();
+                });
+              }
+            }
+          }
+        }
       });
-
       window.pin.advertPin(filteredAdverts);
     },
 
