@@ -2,7 +2,8 @@
 
 (function () {
   window.util = {
-    pageActive: document.querySelector('.map__pin--main'),
+    ESC_KEYCODE: 27,
+    pageActive: document.querySelector('.map__pin--main')
   };
 })();
 

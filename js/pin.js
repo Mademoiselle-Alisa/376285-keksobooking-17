@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var advertsArray = [];
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   function renderPin(advertElem) {
@@ -10,7 +9,6 @@
     pinElement.querySelector('img').alt = advertElem.offer.type;
     pinElement.style.left = (advertElem.location.x - 25) + 'px';
     pinElement.style.top = (advertElem.location.y - 70) + 'px';
-
     return pinElement;
   }
 
@@ -24,19 +22,15 @@
   };
 
   window.pin = {
-    savePins: function (loadedAdverts) {
-      advertsArray = loadedAdverts;
-      window.pin.advertPin(advertsArray);
-    },
 
     filterPins: function (filter) {
       removePins();
 
       if (filter === 'any') {
-        window.pin.advertPin(advertsArray);
+        window.pin.advertPin(window.data.loadedAdverts);
         return;
       }
-      var filteredAdverts = advertsArray.filter(function (advert) {
+      var filteredAdverts = window.data.loadedAdverts.filter(function (advert) {
         return advert.offer.type === filter;
       });
 
@@ -49,6 +43,7 @@
       for (var i = 0; i < advertsCount; i++) {
         var renderedPin = renderPin(adverts[i]);
         fragment.appendChild(renderedPin);
+        renderedPin.addEventListener('click', window.card.createCard.bind(null, adverts[i]));
       }
       mapPins.appendChild(fragment);
     }
