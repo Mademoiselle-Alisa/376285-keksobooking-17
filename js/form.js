@@ -3,10 +3,12 @@
 (function () {
   var ARROW_HEIGHT = 22;
   var inputAdress = document.querySelector('#address');
+  var formReset = document.querySelector('.ad-form__reset');
 
   window.form = {
     formFieldsets: document.querySelectorAll('fieldset'),
     formSelects: document.querySelectorAll('select'),
+
 
     changeAdress: function () {
       inputAdress.value = (parseInt(window.util.pageActive.style.left, 10) + parseInt(window.util.pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(window.util.pageActive.style.top, 10) + parseInt(window.util.pageActive.offsetHeight, 10) + ARROW_HEIGHT);
@@ -137,5 +139,6 @@
   roomNumber.addEventListener('change', checkRoomGuestsValidity);
   guestCapacity.addEventListener('change', checkRoomGuestsValidity);
   advertForm.addEventListener('submit', submitFormData);
+  formReset.addEventListener('click', window.map.pageDeactivate);
 
 })();
