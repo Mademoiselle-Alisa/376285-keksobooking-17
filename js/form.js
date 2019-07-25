@@ -34,6 +34,8 @@
   var roomNumber = document.querySelector('#room_number');
   var guestCapacity = document.querySelector('#capacity');
 
+  var advertForm = document.querySelector('form.ad-form');
+
   var changeFlatCost = function (evt) {
     switch (evt.currentTarget.value) {
       case 'bungalo':
@@ -73,10 +75,67 @@
   };
   checkRoomGuestsValidity();
 
+  var closeSuccessWindowOnEsc = function (evt) {
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
+      closeSuccessWindow();
+    }
+  };
+
+  var closeErrorWindowOnEsc = function (evt) {
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
+      closeErrorWindow();
+    }
+  };
+
+  var closeSuccessWindow = function () {
+    var successWindow = document.querySelector('.success');
+    document.removeEventListener('keydown', closeSuccessWindowOnEsc);
+    document.removeEventListener('click', closeSuccessWindow);
+    successWindow.remove();
+  };
+
+  var closeErrorWindow = function () {
+    var errorWindow = document.querySelector('.error');
+    document.removeEventListener('keydown', closeErrorWindowOnEsc);
+    document.removeEventListener('click', closeErrorWindow);
+    var errorBtn = errorWindow.querySelector('.error__button');
+    errorBtn.removeEventListener('click', closeErrorWindow);
+    errorWindow.remove();
+  };
+
+  var onLoad = function () {
+    window.map.pageDeactivate();
+    var successTemplate = document.querySelector('#success').content.querySelector('.success');
+    var successWindow = successTemplate.cloneNode(true);
+    var body = document.querySelector('body');
+    body.appendChild(successWindow);
+    document.addEventListener('keydown', closeSuccessWindowOnEsc);
+    document.addEventListener('click', closeSuccessWindow);
+  };
+
+  var onError = function (message) {
+    var main = document.querySelector('main');
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+    var errorWindow = errorTemplate.cloneNode(true);
+    errorWindow.querySelector('.error__message').textContent += '. ' + message;
+    main.appendChild(errorWindow);
+    document.addEventListener('keydown', closeErrorWindowOnEsc);
+    document.addEventListener('click', closeErrorWindow);
+    var errorBtn = errorWindow.querySelector('.error__button');
+    errorBtn.addEventListener('click', closeErrorWindow);
+  };
+
+  var submitFormData = function (evt) {
+    evt.preventDefault();
+    var formData = new FormData(advertForm);
+    window.backend.save(formData, onLoad, onError);
+  };
+
   flatType.addEventListener('change', changeFlatCost);
   flatTimeIn.addEventListener('change', changeTime);
   flatTimeOut.addEventListener('change', changeTime);
   roomNumber.addEventListener('change', checkRoomGuestsValidity);
   guestCapacity.addEventListener('change', checkRoomGuestsValidity);
+  advertForm.addEventListener('submit', submitFormData);
 
 })();

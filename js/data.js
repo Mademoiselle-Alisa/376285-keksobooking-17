@@ -17,6 +17,7 @@
     loadedAdverts: [],
 
     loadData: function (data) {
+      window.data.loadedAdverts.splice(0, window.data.loadedAdverts.length);
       data.forEach(function (elem) {
         var newAd = new Advert(elem);
         window.data.loadedAdverts.push(newAd);
