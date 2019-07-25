@@ -7,6 +7,7 @@
   var map = document.querySelector('.map');
   var addForm = document.querySelector('.ad-form');
   var pageActivated = false;
+  var filterFlatType = document.querySelector('#housing-type');
 
   var onErrorEscDown = function (evt) {
     if (evt.keyCode === window.util.ESC_KEYCODE) {
@@ -120,5 +121,12 @@
     document.addEventListener('mouseup', pinDown);
 
   });
+
+  var filterMapPins = function () {
+    var optionValue = filterFlatType.value;
+    window.pin.filterPins(optionValue);
+  };
+
+  filterFlatType.addEventListener('change', filterMapPins);
 
 })();

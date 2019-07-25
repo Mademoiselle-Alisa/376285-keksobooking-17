@@ -4,8 +4,6 @@
   var ARROW_HEIGHT = 22;
   var inputAdress = document.querySelector('#address');
 
-  var filterFlatType = document.querySelector('#housing-type');
-
   window.form = {
     formFieldsets: document.querySelectorAll('fieldset'),
     formSelects: document.querySelectorAll('select'),
@@ -32,6 +30,9 @@
   var flatCost = document.querySelector('#price');
   var flatTimeIn = document.querySelector('#timein');
   var flatTimeOut = document.querySelector('#timeout');
+
+  var roomNumber = document.querySelector('#room_number');
+  var guestCapacity = document.querySelector('#capacity');
 
   var changeFlatCost = function (evt) {
     switch (evt.currentTarget.value) {
@@ -62,16 +63,20 @@
     }
   };
 
+  var checkRoomGuestsValidity = function () {
+    var capacity = parseInt(guestCapacity.value, 10);
+    var roomCount = parseInt(roomNumber.value, 10);
+    guestCapacity.setCustomValidity('');
+    if ((roomCount / capacity < 1) || (roomCount === 100 && capacity !== 0) || (roomCount !== 100 && capacity === 0)) {
+      guestCapacity.setCustomValidity('Неверное количество гостей!');
+    }
+  };
+  checkRoomGuestsValidity();
+
   flatType.addEventListener('change', changeFlatCost);
   flatTimeIn.addEventListener('change', changeTime);
   flatTimeOut.addEventListener('change', changeTime);
-
-  var filterMapPins = function () {
-    var optionValue = filterFlatType.value;
-    window.pin.filterPins(optionValue);
-  };
-
-  filterFlatType.addEventListener('change', filterMapPins);
-
+  roomNumber.addEventListener('change', checkRoomGuestsValidity);
+  guestCapacity.addEventListener('change', checkRoomGuestsValidity);
 
 })();
