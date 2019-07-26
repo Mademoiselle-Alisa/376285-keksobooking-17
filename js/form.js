@@ -8,9 +8,13 @@
   var formReset = document.querySelector('.ad-form__reset');
   var formLoadAvatar = document.querySelector('.ad-form__field input[type=file]');
   var userAvatar = document.querySelector('.ad-form-header__preview img');
-
   var formPhotoLoad = document.querySelector('.ad-form__upload input[type=file]');
   var formLoadedPhotos = document.querySelector('.ad-form__photo');
+
+  var userAvatarDropZone = document.querySelector('.ad-form-header__drop-zone');
+  var userPhotosDropZone = document.querySelector('.ad-form__drop-zone');
+
+  var loaderFunction = '';
 
   window.form = {
     formFieldsets: document.querySelectorAll('fieldset'),
@@ -139,22 +143,52 @@
     window.backend.save(formData, onLoad, onError);
   };
 
-  var loadUserdata = function (evt) {
-    switch (evt.currentTarget.id) {
+  var selectUploadType = function (evt) {
+    switch (evt.currentTarget) {
+      case userAvatarDropZone:
+      case formLoadAvatar:
+        loaderFunction = function (fileContent) {
+            userAvatar.src = fileContent;
+        };
+        return 'avatar';
+        
+        break;
+      case userPhotosDropZone:
+      case formPhotoLoad:
+        loaderFunction = function (fileContent) {
+          formLoadedPhotos.insertAdjacentHTML('afterbegin', '<img src=' + fileContent + ' width=70 height=70>');
+        };
+        return 'images';
+        break;
+      default:
+        break;
+    };
+  }
+
+  var handleDrop = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    var dataType = selectUploadType(evt);
+    let dt = evt.dataTransfer;
+    let files = dt.files;
+    loadUserdata(files[0]);
+  };
+
+  var loadFromClick = function (evt) {
+    var dataType = selectUploadType(evt);
+    switch (dataType) {
       case 'avatar':
         var file = formLoadAvatar.files[0];
-        var loaderFunction = function () {
-          userAvatar.src = reader.result;
-        };
         break;
       case 'images':
         var file = formPhotoLoad.files[0];
-        var loaderFunction = function () {
-          formLoadedPhotos.insertAdjacentHTML('afterbegin', '<img src=' + reader.result + ' width=70 height=70>');
-        };
       default:
         break;
     }
+    loadUserdata(file);
+  }
+
+  var loadUserdata = function (file) {
     var fileName = file.name.toLowerCase();
     var matches = FILE_TYPES.some(function (elem) {
       return fileName.endsWith(elem);
@@ -164,10 +198,15 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        loaderFunction();
+        loaderFunction(reader.result);
       });
       reader.readAsDataURL(file);
     }
+  };
+
+  var dragFunction = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
   }
 
   flatType.addEventListener('change', changeFlatCost);
@@ -178,7 +217,17 @@
   advertForm.addEventListener('submit', submitFormData);
   formReset.addEventListener('click', window.map.pageDeactivate);
 
-  formLoadAvatar.addEventListener('change', loadUserdata);
-  formPhotoLoad.addEventListener('change', loadUserdata);
+  formLoadAvatar.addEventListener('change', loadFromClick);
+  formPhotoLoad.addEventListener('change', loadFromClick);
+
+  userAvatarDropZone.addEventListener('dragenter', dragFunction, false);
+  userAvatarDropZone.addEventListener('dragleave', dragFunction, false);
+  userAvatarDropZone.addEventListener('dragover', dragFunction  , false);
+  userAvatarDropZone.addEventListener('drop', handleDrop, false);
+
+  userPhotosDropZone.addEventListener('dragenter', dragFunction, false);
+  userPhotosDropZone.addEventListener('dragleave', dragFunction, false);
+  userPhotosDropZone.addEventListener('dragover', dragFunction  , false);
+  userPhotosDropZone.addEventListener('drop', handleDrop, false);
 
 })();
