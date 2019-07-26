@@ -2,13 +2,19 @@
 
 (function () {
   var ARROW_HEIGHT = 22;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  
   var inputAdress = document.querySelector('#address');
   var formReset = document.querySelector('.ad-form__reset');
+  var formLoadAvatar = document.querySelector('.ad-form__field input[type=file]');
+  var userAvatar = document.querySelector('.ad-form-header__preview img');
+
+  var formPhotoLoad = document.querySelector('.ad-form__upload input[type=file]');
+  var formLoadedPhotos = document.querySelector('.ad-form__photo');
 
   window.form = {
     formFieldsets: document.querySelectorAll('fieldset'),
     formSelects: document.querySelectorAll('select'),
-
 
     changeAdress: function () {
       inputAdress.value = (parseInt(window.util.pageActive.style.left, 10) + parseInt(window.util.pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(window.util.pageActive.style.top, 10) + parseInt(window.util.pageActive.offsetHeight, 10) + ARROW_HEIGHT);
@@ -133,6 +139,37 @@
     window.backend.save(formData, onLoad, onError);
   };
 
+  var loadUserdata = function (evt) {
+    switch (evt.currentTarget.id) {
+      case 'avatar':
+        var file = formLoadAvatar.files[0];
+        var loaderFunction = function () {
+          userAvatar.src = reader.result;
+        };
+        break;
+      case 'images':
+        var file = formPhotoLoad.files[0];
+        var loaderFunction = function () {
+          formLoadedPhotos.insertAdjacentHTML('afterbegin', '<img src=' + reader.result + ' width=70 height=70>');
+        };
+      default:
+        break;
+    }
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (elem) {
+      return fileName.endsWith(elem);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        loaderFunction();
+      });
+      reader.readAsDataURL(file);
+    }
+  }
+
   flatType.addEventListener('change', changeFlatCost);
   flatTimeIn.addEventListener('change', changeTime);
   flatTimeOut.addEventListener('change', changeTime);
@@ -140,5 +177,8 @@
   guestCapacity.addEventListener('change', checkRoomGuestsValidity);
   advertForm.addEventListener('submit', submitFormData);
   formReset.addEventListener('click', window.map.pageDeactivate);
+
+  formLoadAvatar.addEventListener('change', loadUserdata);
+  formPhotoLoad.addEventListener('change', loadUserdata);
 
 })();
