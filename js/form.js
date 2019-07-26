@@ -3,7 +3,6 @@
 (function () {
   var ARROW_HEIGHT = 22;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  
   var inputAdress = document.querySelector('#address');
   var formReset = document.querySelector('.ad-form__reset');
   var formLoadAvatar = document.querySelector('.ad-form__field input[type=file]');
@@ -148,45 +147,40 @@
       case userAvatarDropZone:
       case formLoadAvatar:
         loaderFunction = function (fileContent) {
-            userAvatar.src = fileContent;
+          userAvatar.src = fileContent;
         };
         return 'avatar';
-        
-        break;
       case userPhotosDropZone:
       case formPhotoLoad:
         loaderFunction = function (fileContent) {
           formLoadedPhotos.insertAdjacentHTML('afterbegin', '<img src=' + fileContent + ' width=70 height=70>');
         };
         return 'images';
-        break;
-      default:
-        break;
-    };
-  }
+    }
+    return null;
+  };
 
   var handleDrop = function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    var dataType = selectUploadType(evt);
-    let dt = evt.dataTransfer;
-    let files = dt.files;
+    var dt = evt.dataTransfer;
+    var files = dt.files;
     loadUserdata(files[0]);
   };
 
   var loadFromClick = function (evt) {
     var dataType = selectUploadType(evt);
+    var file = '';
     switch (dataType) {
       case 'avatar':
-        var file = formLoadAvatar.files[0];
+        file = formLoadAvatar.files[0];
         break;
       case 'images':
-        var file = formPhotoLoad.files[0];
-      default:
+        file = formPhotoLoad.files[0];
         break;
     }
     loadUserdata(file);
-  }
+  };
 
   var loadUserdata = function (file) {
     var fileName = file.name.toLowerCase();
@@ -207,7 +201,7 @@
   var dragFunction = function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
-  }
+  };
 
   flatType.addEventListener('change', changeFlatCost);
   flatTimeIn.addEventListener('change', changeTime);
@@ -222,12 +216,12 @@
 
   userAvatarDropZone.addEventListener('dragenter', dragFunction, false);
   userAvatarDropZone.addEventListener('dragleave', dragFunction, false);
-  userAvatarDropZone.addEventListener('dragover', dragFunction  , false);
+  userAvatarDropZone.addEventListener('dragover', dragFunction, false);
   userAvatarDropZone.addEventListener('drop', handleDrop, false);
 
   userPhotosDropZone.addEventListener('dragenter', dragFunction, false);
   userPhotosDropZone.addEventListener('dragleave', dragFunction, false);
-  userPhotosDropZone.addEventListener('dragover', dragFunction  , false);
+  userPhotosDropZone.addEventListener('dragover', dragFunction, false);
   userPhotosDropZone.addEventListener('drop', handleDrop, false);
 
 })();
