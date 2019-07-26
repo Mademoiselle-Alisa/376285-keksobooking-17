@@ -165,6 +165,7 @@
     evt.stopPropagation();
     var dt = evt.dataTransfer;
     var files = dt.files;
+    selectUploadType(evt);
     loadUserdata(files[0]);
   };
 
