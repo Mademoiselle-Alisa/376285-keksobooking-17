@@ -24,6 +24,10 @@
     formSelects: document.querySelectorAll('select'),
 
     changeAdress: function () {
+      pageActiveLeft = parseInt(window.util.pageActive.style.left, 10);
+      pageActiveOffsetW = parseInt(window.util.pageActive.offsetWidth / 2, 10);
+      pageActiveTop = parseInt(window.util.pageActive.style.top, 10);
+      pageActiveOffsetH = parseInt(window.util.pageActive.offsetHeight, 10);
       inputAdress.value = (pageActiveLeft + pageActiveOffsetW) + ', ' + (pageActiveTop + pageActiveOffsetH + ARROW_HEIGHT);
     }
   };
@@ -38,9 +42,7 @@
     window.form.formSelects[i].disabled = true;
   }
   // 3. Заполнение адреса
-
-  inputAdress.value = (pageActiveLeft + pageActiveOffsetW) + ', ' + (pageActiveTop + pageActiveOffsetH + ARROW_HEIGHT);
-
+  window.form.changeAdress();
   var flatType = document.querySelector('#type');
   var flatCost = document.querySelector('#price');
   var flatTimeIn = document.querySelector('#timein');

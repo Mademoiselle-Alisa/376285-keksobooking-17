@@ -40,7 +40,7 @@
       var filteredAdvertsArray = Array.from(filter.elements);
       filteredAdvertsArray.forEach(function (elem) {
         if (typeof (elem.value) === 'undefined') {
-          return; 
+          return;
         }
         if (elem.tagName.toLowerCase() === 'input' && elem.checked) {
           filteredAdverts = filteredAdverts.filter(function (advert) {
@@ -75,9 +75,10 @@
                 default:
                   break;
               }
+              return null;
             });
             return;
-          } 
+          }
           filteredAdverts = filteredAdverts.filter(function (advert) {
             return advert.offer[currentFilter].toString() === elem.value.toString();
           });
