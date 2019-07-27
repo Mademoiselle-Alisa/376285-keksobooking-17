@@ -12,6 +12,10 @@
 
   var userAvatarDropZone = document.querySelector('.ad-form-header__drop-zone');
   var userPhotosDropZone = document.querySelector('.ad-form__drop-zone');
+  var pageActiveLeft = parseInt(window.util.pageActive.style.left, 10);
+  var pageActiveOffsetW = parseInt(window.util.pageActive.offsetWidth / 2, 10);
+  var pageActiveTop = parseInt(window.util.pageActive.style.top, 10);
+  var pageActiveOffsetH = parseInt(window.util.pageActive.offsetHeight, 10);
 
   var loaderFunction = '';
 
@@ -20,7 +24,11 @@
     formSelects: document.querySelectorAll('select'),
 
     changeAdress: function () {
-      inputAdress.value = (parseInt(window.util.pageActive.style.left, 10) + parseInt(window.util.pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(window.util.pageActive.style.top, 10) + parseInt(window.util.pageActive.offsetHeight, 10) + ARROW_HEIGHT);
+      pageActiveLeft = parseInt(window.util.pageActive.style.left, 10);
+      pageActiveOffsetW = parseInt(window.util.pageActive.offsetWidth / 2, 10);
+      pageActiveTop = parseInt(window.util.pageActive.style.top, 10);
+      pageActiveOffsetH = parseInt(window.util.pageActive.offsetHeight, 10);
+      inputAdress.value = (pageActiveLeft + pageActiveOffsetW) + ', ' + (pageActiveTop + pageActiveOffsetH + ARROW_HEIGHT);
     }
   };
 
@@ -34,9 +42,7 @@
     window.form.formSelects[i].disabled = true;
   }
   // 3. Заполнение адреса
-
-  inputAdress.value = (parseInt(window.util.pageActive.style.left, 10) + parseInt(window.util.pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(window.util.pageActive.style.top, 10) + parseInt(window.util.pageActive.offsetHeight / 2, 10));
-
+  window.form.changeAdress();
   var flatType = document.querySelector('#type');
   var flatCost = document.querySelector('#price');
   var flatTimeIn = document.querySelector('#timein');
@@ -65,6 +71,8 @@
         flatCost.min = 10000;
         flatCost.placeholder = 10000;
         break;
+      default:
+        break;
     }
   };
 
@@ -80,7 +88,10 @@
     var capacity = parseInt(guestCapacity.value, 10);
     var roomCount = parseInt(roomNumber.value, 10);
     guestCapacity.setCustomValidity('');
-    if ((roomCount / capacity < 1) || (roomCount === 100 && capacity !== 0) || (roomCount !== 100 && capacity === 0)) {
+    var roomCapacityCoeff = (roomCount / capacity < 1);
+    var bigRoomNoGuests = (roomCount === 100 && capacity !== 0);
+    var notBigRoom = (roomCount !== 100 && capacity === 0);
+    if (roomCapacityCoeff || bigRoomNoGuests || notBigRoom) {
       guestCapacity.setCustomValidity('Неверное количество гостей!');
     }
   };
