@@ -15,6 +15,8 @@
   var pageActivated = false;
 
   var filtersForm = document.querySelector('.map__filters');
+  var userAvatar = document.querySelector('.ad-form-header__preview img');
+  var formLoadedPhotos = document.querySelector('.ad-form__photo');
 
   var onErrorEscDown = function (evt) {
     if (evt.keyCode === window.util.ESC_KEYCODE) {
@@ -67,6 +69,8 @@
       window.form.formSelects[i].disabled = true;
       window.form.formSelects[i][0].selected = true;
     }
+    userAvatar.src = 'img/muffin-grey.svg';
+    formLoadedPhotos.innerHTML = '';
 
     window.util.pageActive.style.top = '375px';
     window.util.pageActive.style.left = '570px';

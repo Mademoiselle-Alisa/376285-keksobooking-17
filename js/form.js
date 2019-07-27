@@ -2,13 +2,22 @@
 
 (function () {
   var ARROW_HEIGHT = 22;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var inputAdress = document.querySelector('#address');
   var formReset = document.querySelector('.ad-form__reset');
+  var formLoadAvatar = document.querySelector('.ad-form__field input[type=file]');
+  var userAvatar = document.querySelector('.ad-form-header__preview img');
+  var formPhotoLoad = document.querySelector('.ad-form__upload input[type=file]');
+  var formLoadedPhotos = document.querySelector('.ad-form__photo');
+
+  var userAvatarDropZone = document.querySelector('.ad-form-header__drop-zone');
+  var userPhotosDropZone = document.querySelector('.ad-form__drop-zone');
+
+  var loaderFunction = '';
 
   window.form = {
     formFieldsets: document.querySelectorAll('fieldset'),
     formSelects: document.querySelectorAll('select'),
-
 
     changeAdress: function () {
       inputAdress.value = (parseInt(window.util.pageActive.style.left, 10) + parseInt(window.util.pageActive.offsetWidth / 2, 10)) + ', ' + (parseInt(window.util.pageActive.style.top, 10) + parseInt(window.util.pageActive.offsetHeight, 10) + ARROW_HEIGHT);
@@ -133,6 +142,68 @@
     window.backend.save(formData, onLoad, onError);
   };
 
+  var selectUploadType = function (evt) {
+    switch (evt.currentTarget) {
+      case userAvatarDropZone:
+      case formLoadAvatar:
+        loaderFunction = function (fileContent) {
+          userAvatar.src = fileContent;
+        };
+        return 'avatar';
+      case userPhotosDropZone:
+      case formPhotoLoad:
+        loaderFunction = function (fileContent) {
+          formLoadedPhotos.insertAdjacentHTML('afterbegin', '<img src=' + fileContent + ' width=70 height=70>');
+        };
+        return 'images';
+    }
+    return null;
+  };
+
+  var handleDrop = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    var dt = evt.dataTransfer;
+    var files = dt.files;
+    selectUploadType(evt);
+    loadUserdata(files[0]);
+  };
+
+  var loadFromClick = function (evt) {
+    var dataType = selectUploadType(evt);
+    var file = '';
+    switch (dataType) {
+      case 'avatar':
+        file = formLoadAvatar.files[0];
+        break;
+      case 'images':
+        file = formPhotoLoad.files[0];
+        break;
+    }
+    loadUserdata(file);
+  };
+
+  var loadUserdata = function (file) {
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (elem) {
+      return fileName.endsWith(elem);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        loaderFunction(reader.result);
+      });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  var dragFunction = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+  };
+
   flatType.addEventListener('change', changeFlatCost);
   flatTimeIn.addEventListener('change', changeTime);
   flatTimeOut.addEventListener('change', changeTime);
@@ -140,5 +211,18 @@
   guestCapacity.addEventListener('change', checkRoomGuestsValidity);
   advertForm.addEventListener('submit', submitFormData);
   formReset.addEventListener('click', window.map.pageDeactivate);
+
+  formLoadAvatar.addEventListener('change', loadFromClick);
+  formPhotoLoad.addEventListener('change', loadFromClick);
+
+  userAvatarDropZone.addEventListener('dragenter', dragFunction, false);
+  userAvatarDropZone.addEventListener('dragleave', dragFunction, false);
+  userAvatarDropZone.addEventListener('dragover', dragFunction, false);
+  userAvatarDropZone.addEventListener('drop', handleDrop, false);
+
+  userPhotosDropZone.addEventListener('dragenter', dragFunction, false);
+  userPhotosDropZone.addEventListener('dragleave', dragFunction, false);
+  userPhotosDropZone.addEventListener('dragover', dragFunction, false);
+  userPhotosDropZone.addEventListener('drop', handleDrop, false);
 
 })();
