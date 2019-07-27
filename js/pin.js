@@ -23,7 +23,8 @@
 
   var removePins = function () {
     var showedPins = document.querySelectorAll('.map__pin');
-    Array.from(showedPins).filter(function (pin) {
+    var showPinsArr = Array.from(showedPins);
+    showPinsArr.filter(function (pin) {
       return !pin.classList.contains('map__pin--main');
     }).forEach(function (pin) {
       pin.remove();
@@ -36,36 +37,50 @@
       removePins();
       window.card.removeCard();
       var filteredAdverts = window.data.loadedAdverts;
-      Array.from(filter.elements).forEach(function (elem) {
-        if (typeof (elem.value) !== 'undefined') {
-          if (elem.tagName.toLowerCase() === 'input' && elem.checked) {
+      var filteredAdvertsArray = Array.from(filter.elements);
+      filteredAdvertsArray.forEach(function (elem) {
+        if (typeof (elem.value) === 'undefined') {
+          return; 
+        }
+        if (elem.tagName.toLowerCase() === 'input' && elem.checked) {
+          filteredAdverts = filteredAdverts.filter(function (advert) {
+            return advert.offer.features.includes(elem.value);
+          });
+        }
+        if (elem.tagName.toLowerCase() === 'select') {
+          if (elem.value === 'any') {
+            return;
+          }
+          var currentFilter = filtersDict[elem.name];
+          var isElemHousingPrice = (elem.name === 'housing-price');
+          if (isElemHousingPrice) {
             filteredAdverts = filteredAdverts.filter(function (advert) {
-              return advert.offer.features.includes(elem.value);
-            });
-          }
-          if (elem.tagName.toLowerCase() === 'select') {
-            if (elem.value !== 'any') {
-              var currentFilter = filtersDict[elem.name];
-              if (elem.name === 'housing-price') {
-                filteredAdverts = filteredAdverts.filter(function (advert) {
-                  if (elem.value === 'middle' && advert.offer[currentFilter] >= 10000 && advert.offer[currentFilter] <= 50000) {
+              var currentPrice = advert.offer[currentFilter];
+              switch (elem.value) {
+                case 'middle':
+                  if (currentPrice >= 10000 && currentPrice <= 50000) {
                     return advert;
                   }
-                  if (elem.value === 'low' && advert.offer[currentFilter] < 10000) {
+                  break;
+                case 'low':
+                  if (currentPrice < 10000) {
                     return advert;
                   }
-                  if (elem.value === 'high' && advert.offer[currentFilter] > 50000) {
+                  break;
+                case 'high':
+                  if (currentPrice > 50000) {
                     return advert;
                   }
-                  return null;
-                });
-              } else {
-                filteredAdverts = filteredAdverts.filter(function (advert) {
-                  return advert.offer[currentFilter].toString() === elem.value.toString();
-                });
+                  break;
+                default:
+                  break;
               }
-            }
-          }
+            });
+            return;
+          } 
+          filteredAdverts = filteredAdverts.filter(function (advert) {
+            return advert.offer[currentFilter].toString() === elem.value.toString();
+          });
         }
       });
       window.pin.advertPin(filteredAdverts);
