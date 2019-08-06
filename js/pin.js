@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var MAX_SHOW_PINS = 5;
+  var LOW_PRICE = 10000;
+  var HIGH_PRICE = 50000;
+
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
@@ -58,17 +62,17 @@
               var currentPrice = advert.offer[currentFilter];
               switch (elem.value) {
                 case 'middle':
-                  if (currentPrice >= 10000 && currentPrice <= 50000) {
+                  if (currentPrice >= LOW_PRICE && currentPrice <= HIGH_PRICE) {
                     return advert;
                   }
                   break;
                 case 'low':
-                  if (currentPrice < 10000) {
+                  if (currentPrice < LOW_PRICE) {
                     return advert;
                   }
                   break;
                 case 'high':
-                  if (currentPrice > 50000) {
+                  if (currentPrice > HIGH_PRICE) {
                     return advert;
                   }
                   break;
@@ -88,7 +92,7 @@
     },
 
     advertPin: function (adverts) {
-      var advertsCount = (adverts.length < 5) ? adverts.length : 5;
+      var advertsCount = (adverts.length < MAX_SHOW_PINS) ? adverts.length : MAX_SHOW_PINS;
       var fragment = document.createDocumentFragment();
       for (var i = 0; i < advertsCount; i++) {
         var renderedPin = renderPin(adverts[i]);

@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  // 2. Активация страницы
-  // активация страницы и перетаскивание метки
 
   window.map = {
     pageDeactivate: function () {
@@ -58,8 +56,12 @@
       window.form.formFieldsets[i].disabled = true;
       var elements = Array.from(window.form.formFieldsets[i].elements);
       elements.forEach(function (elem) {
-        if (elem.tagName.toLowerCase() !== 'select') {
+        if (elem.tagName.toLowerCase() === 'select') {
+          return;
+        }
+        if (elem.type.toLowerCase() === 'checkbox') {
           elem.checked = false;
+        } else {
           elem.value = '';
         }
       });

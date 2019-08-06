@@ -3,6 +3,12 @@
 (function () {
   var ARROW_HEIGHT = 22;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var FORM_MIN_PRICES = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
+  };
   var inputAdress = document.querySelector('#address');
   var formReset = document.querySelector('.ad-form__reset');
   var formLoadAvatar = document.querySelector('.ad-form__field input[type=file]');
@@ -56,20 +62,20 @@
   var changeFlatCost = function (evt) {
     switch (evt.currentTarget.value) {
       case 'bungalo':
-        flatCost.min = 0;
-        flatCost.placeholder = 0;
+        flatCost.min = FORM_MIN_PRICES['bungalo'];
+        flatCost.placeholder = FORM_MIN_PRICES['bungalo'];
         break;
       case 'flat':
-        flatCost.min = 1000;
-        flatCost.placeholder = 1000;
+        flatCost.min = FORM_MIN_PRICES['flat'];
+        flatCost.placeholder = FORM_MIN_PRICES['flat'];
         break;
       case 'house':
-        flatCost.min = 5000;
-        flatCost.placeholder = 5000;
+        flatCost.min = FORM_MIN_PRICES['house'];
+        flatCost.placeholder = FORM_MIN_PRICES['house'];
         break;
       case 'palace':
-        flatCost.min = 10000;
-        flatCost.placeholder = 10000;
+        flatCost.min = FORM_MIN_PRICES['palace'];
+        flatCost.placeholder = FORM_MIN_PRICES['palace'];
         break;
       default:
         break;
